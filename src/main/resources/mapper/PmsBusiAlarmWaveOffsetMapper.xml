@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper标签用来配置java对象与sql之间的映射关系，namespace是一个描述该配置的唯一id -->
+<mapper namespace="com.nannar.dao.PmsBusiAlarmWaveOffsetMapper">
+    <sql id="tableName" >
+  	${dbName}.pms_busi_alarm_wave_offset
+  </sql>
+    <select id="selectTemp" resultType="map">
+        select * from ${dbName}.pms_busi_wave_offset_data_temp where file_log_id = #{fileLogId,jdbcType=BIGINT} and offset_time is not null LIMIT 1
+    </select>
+    <update id="makeDataFromAlarmLog">
+        replace into <include refid="tableName" />
+        (alarm_wave_offset_id,
+        alarm_log_id,                    detection_id,           file_log_id,
+        alarm_time,                      offset_time,            alarm_distance,                 offset_distance,
+        alarm_value,                      offset_value,           offset_value_ori)
+        select distinct concat(x1.alarm_log_id,'-',x2.offset_value) as alarm_wave_offset_id,
+        x1.alarm_log_id,                x1.detection_id,          x2.file_log_id,
+        x1.alarm_time,                    x2.offset_time,         x1.distance as alarm_distance,  x2.distance as offset_distance,
+        x1.data_value as alarm_value,     x2.offset_value,        x2.offset_value_ori
+        from ${dbName}.pms_busi_alarm_log x1
+        inner join (
+        select * from ${dbName}.pms_busi_wave_offset_data_temp where file_log_id = #{fileLogId,jdbcType=BIGINT} and offset_time is not null
+        ) x2
+        on x2.offset_time between date_add(x1.alarm_time,interval -50000 microsecond) and  date_add(x1.alarm_time,interval 50000 microsecond)
+        where not exists(
+        select 1 from <include refid="tableName" /> where  x1.alarm_log_id  = alarm_log_id
+        )
+    </update>
+</mapper>
+

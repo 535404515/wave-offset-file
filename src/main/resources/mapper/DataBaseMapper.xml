@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper标签用来配置java对象与sql之间的映射关系，namespace是一个描述该配置的唯一id -->
+<mapper namespace="com.nannar.dao.DataBaseMapper">
+
+    <select id="loadAlldatabases" resultType="com.nannar.entity.PmsSystemDatabase">
+SELECT
+	line_id AS lineId,
+	line_name as lineName,
+	train_id as trainId,
+	train_no as trainNo,
+	train_type_id as trainTypeId,
+	train_type_name as trainTypeName,
+	monitor_station_id as monitorStationId,
+	device_code as deviceCode,
+	monitor_station_name as monitorStationName,
+	monitor_station_database as monitorStationDatabase,
+	img_path as imgPath,
+	train_no_alias as trainNoAlias,
+	ext1 as ext1,
+	ext2 as ext2,
+	ext3 as ext3
+FROM
+	pms_system_database
+    </select>
+</mapper>
+

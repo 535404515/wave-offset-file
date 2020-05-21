@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper标签用来配置java对象与sql之间的映射关系，namespace是一个描述该配置的唯一id -->
+<mapper namespace="com.nannar.dao.PmsBasicRailwayStationMapper">
+    <resultMap id="BaseResultMap" type="com.nannar.entity.PmsBasicRailwayStation" >
+        <id column="line_id" property="lineId" jdbcType="INTEGER" />
+        <id column="railway_station_id" property="railwayStationId" jdbcType="INTEGER" />
+        <result column="railway_station_name" property="railwayStationName" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+     line_id, railway_station_id, railway_station_name
+  </sql>
+    <sql id="tableName" >
+  	${dbName}.pms_basic_railway_station
+  </sql>
+    <select id="findAll" resultMap="BaseResultMap"   >
+        select
+        <include refid="Base_Column_List" />
+        from  <include refid="tableName" />
+    </select>
+</mapper>
+

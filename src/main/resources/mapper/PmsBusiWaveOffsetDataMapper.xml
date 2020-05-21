@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper标签用来配置java对象与sql之间的映射关系，namespace是一个描述该配置的唯一id -->
+<mapper namespace="com.nannar.dao.PmsBusiWaveOffsetDataMapper">
+	<sql id="tableName" >
+  	${dbName}.pms_busi_wave_offset_data
+  </sql>
+	<insert id="insertSelectiveBatch" >
+		replace into <include refid="tableName" />
+		(offset_id,file_log_id,offset_value,offset_count )
+		values
+		<foreach collection="records" item="record" index="index0" separator=",">
+			<trim prefix="(" suffix=")" suffixOverrides="," >
+				#{record.offsetId,jdbcType=VARCHAR},
+				#{record.fileLogId,jdbcType=BIGINT},
+				#{record.offsetValue,jdbcType=INTEGER},
+				#{record.offsetCount,jdbcType=INTEGER}
+			</trim>
+		</foreach>
+	</insert>
+</mapper>
+

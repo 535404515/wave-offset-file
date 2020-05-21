@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    username: root
+    password: nannar13245768DB
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://192.168.245.132:3306/monitor_603_public?useUnicode=true&characterEncoding=utf8&useSSL=false
+    druid:
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: nannar
+        login-password: command
+      initial-size: 10
+      min-idle: 10
+      max-active: 50
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+  freemarker:
+    cache: false
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  config-location: classpath:mybatis-config.xml
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: /logs

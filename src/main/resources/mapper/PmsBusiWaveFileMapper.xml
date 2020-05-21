@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper标签用来配置java对象与sql之间的映射关系，namespace是一个描述该配置的唯一id -->
+<mapper namespace="com.nannar.dao.PmsBusiWaveFileMapper">
+    <resultMap id="BaseResultMap" type="com.nannar.entity.PmsBusiWaveFile" >
+        <id column="file_log_id" property="fileLogId" jdbcType="BIGINT" />
+        <result column="monitor_station_id" property="monitorStationId" jdbcType="INTEGER" />
+        <result column="monitor_station_id_ex" property="monitorStationIdEx" jdbcType="INTEGER" />
+        <result column="current_station" property="currentStation" jdbcType="INTEGER" />
+        <result column="next_station" property="nextStation" jdbcType="INTEGER" />
+        <result column="direction" property="direction" jdbcType="TINYINT" />
+        <result column="file_type_id" property="fileTypeId" jdbcType="INTEGER" />
+        <result column="remote_dir" property="remoteDir" jdbcType="VARCHAR" />
+        <result column="local_dir" property="localDir" jdbcType="VARCHAR" />
+        <result column="transfer_success" property="transferSuccess" jdbcType="TINYINT" />
+        <result column="time" property="time" jdbcType="TIMESTAMP" />
+        <result column="offset_start_time" property="offsetStartTime" jdbcType="TIMESTAMP" />
+        <result column="offset_end_time" property="offsetEndTime" jdbcType="TIMESTAMP" />
+        <result column="offset_samples" property="offsetSamples" jdbcType="INTEGER" />
+        <result column="file_state" property="fileState" jdbcType="INTEGER" />
+        <result column="section_name" property="sectionName" jdbcType="VARCHAR" />
+
+    </resultMap>
+    <sql id="Base_Column_List" >
+     file_log_id,
+     monitor_station_id,
+     monitor_station_id_ex,
+     current_station,
+     next_station,
+     direction,
+     file_type_id,
+     remote_dir,
+     local_dir,
+     transfer_success,
+     time,
+     offset_start_time,
+     offset_end_time,
+     offset_samples,
+     file_state,
+     section_name
+  </sql>
+    <sql id="tableName" >
+  	${dbName}.pms_busi_wave_file
+  </sql>
+    <insert id="readFileToWaveOffsetDataTemp">
+
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.nannar.entity.PmsBusiWaveFile" >
+        update <include refid="tableName" />
+        <set >
+            <if test="record.monitorStationId != null" >
+                monitor_station_id = #{record.monitorStationId,jdbcType=INTEGER},
+            </if>
+            <if test="record.monitorStationIdEx != null" >
+                monitor_station_id_ex = #{record.monitorStationIdEx,jdbcType=INTEGER},
+            </if>
+            <if test="record.currentStation != null" >
+                current_station = #{record.currentStation,jdbcType=INTEGER},
+            </if>
+            <if test="record.nextStation != null" >
+                next_station = #{record.nextStation,jdbcType=INTEGER},
+            </if>
+            <if test="record.direction != null" >
+                direction = #{record.direction,jdbcType=TINYINT},
+            </if>
+            <if test="record.fileTypeId != null" >
+                file_type_id = #{record.fileTypeId,jdbcType=INTEGER},
+            </if>
+            <if test="record.remoteDir != null" >
+                remote_dir = #{record.remoteDir,jdbcType=VARCHAR},
+            </if>
+            <if test="record.localDir != null" >
+                local_dir = #{record.localDir,jdbcType=VARCHAR},
+            </if>
+            <if test="record.transferSuccess != null" >
+                transfer_success = #{record.transferSuccess,jdbcType=TINYINT},
+            </if>
+            <if test="record.time != null" >
+                time = #{record.time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.offsetStartTime != null" >
+                offset_start_time = #{record.offsetStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.offsetEndTime != null" >
+                offset_end_time = #{record.offsetEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.offsetSamples != null" >
+                offset_samples = #{record.offsetSamples,jdbcType=INTEGER},
+            </if>
+            <if test="record.fileState != null" >
+                file_state = #{record.fileState,jdbcType=INTEGER},
+            </if>
+            <if test="record.sectionName != null" >
+                section_name = #{record.sectionName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where file_log_id = #{record.fileLogId,jdbcType=BIGINT}
+    </update>
+    <select id="listFileForTempOffset" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        <include refid="tableName" />
+        where 1=1
+        <if test="fileTypeId != null">
+            and file_type_id = #{fileTypeId,jdbcType=INTEGER}
+        </if>
+        and file_state = 1
+        and transfer_success = 1
+        order by time desc
+        <if test="offset != null and pageSize != null">
+            limit #{offset,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+        </if>
+        <if test="offset == null and pageSize != null">
+            limit #{pageSize,jdbcType=INTEGER}
+        </if>
+    </select>
+    <select id="listFileForRead" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        <include refid="tableName" />
+        where 1=1
+        <if test="fileTypeId != null">
+            and file_type_id = #{fileTypeId,jdbcType=INTEGER}
+        </if>
+        and transfer_success = 1
+        and ifnull(file_state,0) not in (1)
+        and FILE_STATE not in (2,99)
+        order by time desc
+        <if test="pageSize != null">
+            limit #{pageSize,jdbcType=INTEGER}
+        </if>
+    </select>
+</mapper>
+
